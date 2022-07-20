@@ -5,7 +5,7 @@ const db = require('./models/db.js');
 
 require
 // function to search all accomodations
-function searchall_accomodations() {
+function search_all_accomodations() {
     db.query(
         'SELECT * FROM accommodation',
         function (err, results, fields) {
@@ -15,4 +15,7 @@ function searchall_accomodations() {
     )
 };
 
+function search_accomodations() {
+
+};
 module.exports = accomodation;
