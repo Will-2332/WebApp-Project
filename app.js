@@ -4,7 +4,7 @@ const app = express();
 const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path");
+
 const ejs = require("ejs");
 
 //  my own scripts imported
@@ -13,14 +13,15 @@ const db = require('./models/db');
 // .env because I like it
 require('dotenv').config();
 
-//  settings ? not sure yet
+// //   settings ? not sure yet
+const path = require("path");
+app.use('/static', express.static(path.join(__dirname + './views')));
 app.set('view engine', 'ejs');
-// app.use('/js', express.static('./public/js'));
-// app.use('/css', express.static('./public/css'));
-// app.use('/images', express.static('./public/images'));
-app.use('/public', express.static('./public'))
-// app.use('favicon.ico', express.static('./favicon.ico'));
-app.use('/views', path.join('./public'));
+app.use('/css', express.static(__dirname + './views/css'));
+app.use('/images', express.static(__dirname + './views/images'));
+app.use('/views', express.static(__dirname + './views'))
+app.use('favicon.ico', express.static(__dirname + './favicon.ico'));
+app.use('/views', express.static(path.join(__dirname + './views')));
 
 // routes
 app.get('/', (req, res) => {
@@ -28,9 +29,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-    console.log('works');
     db.query('SELECT * FROM accommodations', (error, results) => {
-        res.render('accommodations', { results: results });
+        res.render('search', { results: results });
     });
 });
 
