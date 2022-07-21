@@ -1,6 +1,5 @@
 // external libraries imported
 const express = require('express');
-const app = express();
 const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,6 +13,9 @@ const db = require('./models/db');
 require('dotenv').config();
 
 // //   settings ? not sure yet
+
+app.use(express.json());
+const app = express();
 app.set('view engine', 'ejs');
 const path = require("path");
 // app.use('/static', express.static(path.join(__dirname + './views')));
@@ -29,9 +31,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-    db.query('SELECT * FROM accommodations', (error, results) => {
-        res.render('search', { results: results });
-    });
+    con.query('SELECT * FROM accomodations',
+        [req.params.search],
+        (err, results, fields) => {
+            if(err) {
+                res.status(500).json({error: err});
+            } else {
+                res.json(results);
+            }
+        });
 });
 
 
