@@ -1,7 +1,7 @@
 {
   "name": "webapp_hotel_project",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "WebApp Development Project For solent University",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -16,5 +16,13 @@
     "mariadb": "^3.0.0",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.19"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Will-2332/WebApp-Project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Will-2332/WebApp-Project/issues"
+  },
+  "homepage": "https://github.com/Will-2332/WebApp-Project#readme"
 }

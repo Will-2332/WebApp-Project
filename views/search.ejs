@@ -2,16 +2,16 @@
 <html>
 
 <head>
-    <%- include('./partials/head'); %>
+  <%- include('./partials/head'); %>
 </head>
 
 <<body class="container">
 
-    <header>
-      <%- include('./partials/header_off'); %>
-    </header>
-    
-    <main>
+  <header>
+    <%- include('./partials/header_off'); %>
+  </header>
+
+  <main>
     <div class="row">
       <div class="col-sm-8">
         <div class="jumbotron">
@@ -19,18 +19,23 @@
           <p>Welcome to PlacesToStay!</p>
         </div>
       </div>
-    
-      <div class="col-sm-4">
+
+      <div class="container-fluid">
         <div class="well">
-          <h3>Don't know what to do with this :)</h3>
+          <<p>
+            Search for a location: <input id="acc_location" />
+            <input type="button" id="search" value="Search" />
+            </p>
+            <div id="results"></div>
         </div>
       </div>
     </div>
-    </main>
-    
-    <footer>
-      <%- include('./partials/footer'); %>
-    </footer>
-    
-    </body>
-    </html> 
+  </main>
+
+  <footer>
+    <%- include('./partials/footer'); %>
+  </footer>
+
+  </body>
+
+</html>
