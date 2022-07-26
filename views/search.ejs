@@ -3,9 +3,10 @@
 
 <head>
   <%- include('./partials/head'); %>
+    <script type='module' src='/views/js/search.js'></script>
 </head>
 
-<<body class="container">
+<body class="container">
 
   <header>
     <%- include('./partials/header_off'); %>
@@ -22,11 +23,15 @@
 
       <div class="container-fluid">
         <div class="well">
-          <<p>
-            Search for a location: <input id="acc_location" />
-            <input type="button" id="search" value="Search" />
-            </p>
-            <div id="results"></div>
+            <select name="location" onchange="ajaxSearch(this.value)">
+              <option value="Colorado">Colorado</option>
+              <option value="Torquay">Torquay</option>
+              <option value="Greece">Greece</option>
+              <option value="Hampshire">Hampshire</option>
+              <option value="Yorkshire">Yorkshire</option>
+            </select>
+          <br>
+          <div id="accomodation"><b>List of accomodations</b></div>
         </div>
       </div>
     </div>
