@@ -1,14 +1,14 @@
 // external libraries imported
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const ejs = require("ejs");
+var urlencodedParser = require('urlencoded-parser')
 
 //  my own scripts imported
 const db = require('./models/db');
 
-var accommodation = null;
 
 // exports
 
@@ -19,28 +19,31 @@ require('dotenv').config();
 
 const app = express();
 app.set('view engine', 'ejs');
+app.use(express.json());
 const path = require("path");
-const { json } = require('body-parser');
+const { json, urlencoded } = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 // routes
 app.get('/', (req, res) => {
     res.render('index')
 });
 
-app.get('/search',(req,res) => {
+app.get('/search', (req, res) => {
     res.render('search')
 });
 
-app.get('/accommodation/all', (req, res) => {
+
+app.get('/accommodation/all', async (req, res) => {
     db.query('SELECT * FROM accommodation',
         [req.params.search],
         (err, results, fields) => {
-            if(err) {
-                res.status(500).json({error: err});
+            if (err) {
+                res.status(500).json({ error: err });
             } else {
                 const accommodation = results;
                 res.json(accommodation);
@@ -50,12 +53,12 @@ app.get('/accommodation/all', (req, res) => {
 });
 
 
-app.get('/location/:location', (req, res) => {
+app.get('/location/:location', async (req, res) => {
     db.query('SELECT * FROM accommodation WHERE location=?',
         [req.params.location],
         (err, results, fields) => {
-            if(err) {
-                res.status(500).json({error: err});
+            if (err) {
+                res.status(500).json({ error: err });
             } else {
                 const accommodation = results;
                 res.json(accommodation);
@@ -64,12 +67,12 @@ app.get('/location/:location', (req, res) => {
         });
 });
 
-app.get('/type/:type', (req, res) => {
+app.get('/type/:type', async (req, res) => {
     db.query('SELECT * FROM accommodation WHERE type=?',
         [req.params.type],
         (err, results, fields) => {
-            if(err) {
-                res.status(500).json({error: err});
+            if (err) {
+                res.status(500).json({ error: err });
             } else {
                 const accommodation = results;
                 res.json(accommodation);
@@ -78,19 +81,39 @@ app.get('/type/:type', (req, res) => {
         });
 });
 
-app.get('/location/:location/type/:type', (req, res) => {
+app.get('/location/:location/type/:type', async (req, res) => {
     db.query('SELECT * FROM accommodation WHERE location=? AND type=?',
         [req.params.location, req.params.type],
         (err, results, fields) => {
-            if(err) {
-                res.status(500).json({error: err});
+            if (err) {
+                res.status(500).json({ error: err });
             } else {
                 const accommodation = results;
                 res.json(accommodation);
-                console.log(db.query);
                 console.log(accommodation)
             }
         });
+});
+
+app.post('/book/', urlencodedParser, async (req, res) => {
+    db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
+        (error, results, fields) => {
+            if (error) {
+                res.status(500).json({ error: err });
+                console.log(db.query)
+            } else {
+                console.log('reservation made!')
+            }
+        })
+    db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
+        (error, results, fields) => {
+            if (error) {
+                res.status(500).json({ error: err });
+            } else {
+                console.log('Availability updated')
+                res.json({ sucess: 1 });
+            }
+        })
 });
 
 _PORT = process.env.PORT || 5500
