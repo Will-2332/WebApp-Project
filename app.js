@@ -98,26 +98,37 @@ app.get('/location/:location/type/:type', async (req, res) => {
 });
 
 app.post('/book/', urlencodedParser, async (req, res) => {
-    try {
-        db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('reservation made!');
-                }
-            })
-        db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('Availability updated');
+    console.log(req.body);
+    db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
+        (error, results, fields) => {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log('Availability updated');
 
-                    res.json({ sucess: 1 });
-                }
-            })
-    } catch (err) { console.log(err) }
+                res.json({ sucess: 1 });
+            }
+        })
+    db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
+        (error, results, fields) => {
+            if (error) {
+                db.query('UPDATE acc_dates SET availability =  availability + ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
+                    (error, results, fields) => {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log('Availability updated');
+
+                            res.json({ sucess: 1 });
+                        }
+                    })
+
+                console.log(error)
+            } else {
+                console.log('Reservation made!');
+            }
+        })
+
 });
 
 _PORT = process.env.PORT || 5500
