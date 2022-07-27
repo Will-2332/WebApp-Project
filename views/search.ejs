@@ -3,35 +3,32 @@
 
 <head>
   <%- include('./partials/head'); %>
-    <script type='module' src='/views/js/search.js'></script>
+    <script type='text/javascript' src='js/search.js' defer></script>
 </head>
 
-<body class="container">
+<body class='container'>
 
   <header>
     <%- include('./partials/header_off'); %>
   </header>
+<%-
 
+%>
   <main>
-    <div class="row">
-      <div class="col-sm-8">
-        <div class="jumbotron">
+    <div class='row'>
+      <div class='col-sm-8'>
+        <div class='jumbotron'>
           <h1>This is great</h1>
           <p>Welcome to PlacesToStay!</p>
         </div>
       </div>
 
-      <div class="container-fluid">
-        <div class="well">
-            <select name="location" onchange="ajaxSearch(this.value)">
-              <option value="Colorado">Colorado</option>
-              <option value="Torquay">Torquay</option>
-              <option value="Greece">Greece</option>
-              <option value="Hampshire">Hampshire</option>
-              <option value="Yorkshire">Yorkshire</option>
-            </select>
-          <br>
-          <div id="accomodation"><b>List of accomodations</b></div>
+      <div class='container-fluid'>
+        <div class='well'>
+          <p>Insert the location</p>
+          <input id='accommodation_location'/>
+          <input type='button' id='accommodation_search' value='search'/>
+          <div id='accommodation'></div>
         </div>
       </div>
     </div>

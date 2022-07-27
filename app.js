@@ -21,6 +21,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.json());
 const path = require("path");
+app.use('/js', express.static(__dirname +'/views/js'));
+app.use('views', express.static(__dirname+'/views'));
 const { json, urlencoded } = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -98,11 +100,11 @@ app.get('/location/:location/type/:type', async (req, res) => {
 app.post('/book/', urlencodedParser, async (req, res) => {
     db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
         (error, results, fields) => {
+            console.log(req.body);
             if (error) {
                 res.status(500).json({ error: err });
-                console.log(db.query)
             } else {
-                console.log('reservation made!')
+                console.log('reservation made!');
             }
         })
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
@@ -110,7 +112,8 @@ app.post('/book/', urlencodedParser, async (req, res) => {
             if (error) {
                 res.status(500).json({ error: err });
             } else {
-                console.log('Availability updated')
+                console.log('Availability updated');
+
                 res.json({ sucess: 1 });
             }
         })
