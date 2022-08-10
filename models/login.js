@@ -1,9 +1,6 @@
 const passport = require("passport");
-const db = require("./db");
-process.env.SALT = salt;
-const db = require('./models/db');
+salt = process.env.SALT;
 const isValid = require('../middleware/login');
-const passport=require('passport');
 const LocalStrategy=require('passport-local').Strategy;
 
 
@@ -13,15 +10,15 @@ const customFields = {
     passwordField: 'password',
 };
 
-const verifyCallback = (username, password, done) => {
+const verifyCallback = (username, pw, done) => {
     db.query('SELECT * FROM acc_users WHERE username = ?', [username], function (error, results, fields) {
         if (error) 
             return (error);
         if (results.length = 0) {
             return done(null, false);
         }
-        isValid = validPassword(password, results[0]);
-        user = { id: results[0].id, username: results[0].username, hash: results[0].hash};
+        isValid = validPassword(pw, results[0]);
+        user = { id: results[0].id, username: results[0].username, pw: results[0].password};
         if (isValid) {
             return done(null, user);
         }
@@ -48,3 +45,4 @@ passport.deserializeUser(function (userId, done) {
 
 exports.module = customFields;
 exports.module = verifyCallback;
+exports.module = strategy;

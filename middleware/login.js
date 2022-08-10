@@ -1,14 +1,17 @@
 const db = require("../models/db");
 require('dotenv').config('path = ./..');
-process.env.SALT = salt;
+const crypto = require('crypto');
+const LocalStrategy = require('passport-local').Strategy;
+salt = process.env.SALT;
 
-function validPassword(password, hash, salt) {
-    var hashVerify = crypto.pbkdf2sync(password, salt, 1000, 60, 'sha512').toString(hex);
+function validPassword(pw, hash, salt) {
+    console.log(pw);
+    var hashVerify = crypto.pbkdf2Sync(pw, salt, 1000, 60, 'sha512').toString();
     return hash == hashVerify;
 }
-function genPassword(password) {
-    var genhash = crypto.pbkdf2sync(password, salt, 1000, 60, 'sha512').toString('hex');
-    return { salt: salt, hashedPassword: genhash };
+function genPassword(pw) {
+    var genhash = crypto.pbkdf2Sync(pw, salt, 1000, 60, 'sha512').toString();
+    return genhash
 }
 function isAuth(req, res, next) {
     if (req.isAuthenticaded()) {

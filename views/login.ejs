@@ -3,7 +3,7 @@
 
 <head>
   <%- include('./partials/head'); %>
-    <script type='text/javascript' src='js/search.js' defer></script>
+    <script type='text/javascript' src='js/login.js' defer></script>
 </head>
 
 <body class='container'>
@@ -24,19 +24,22 @@
 
         <div class='container-fluid'>
           <div class='well'>
+            <form>
+              <p>User Name:</p>
+              <input id='uname' type='text' required />
+              <p>Password:</p>
+              <input id='password' type='password' required />
+              <input type='button' id='login_btn' value='Login' />
+              <br>
+            </form>
 
-            <p>User Name:</p>
-            <input id='uname' type='text' required />
-            <p>Password:</p>
-            <input id='password' type='password' required />
-            <input type='button' id='login_btn' value='login' />
             <div class='well'>
               <p>Register <a href='/register'>here!</a></p>
             </div>
 
-            </div>
           </div>
         </div>
+      </div>
       </div>
     </main>
 

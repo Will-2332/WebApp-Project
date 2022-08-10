@@ -6,15 +6,18 @@ const cors = require("cors");
 const ejs = require("ejs");
 var urlencodedParser = require('urlencoded-parser');
 const passport = require('passport');
-var session = require('express-session')
+var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
+
 
 //  my own scripts imported
 const db = require('./models/db');
+const strategy = require('./models/login')
 const isAdmin = require('./middleware/login');
 const isAuth = require('./middleware/login');
 const userExists = require('./middleware/login');
 const genPassword = require('./middleware/login');
+
 
 
 // exports
@@ -25,6 +28,21 @@ require('dotenv').config();
 //   settings ? not sure yet
 
 const app = express();
+app.use(session({
+    key: 'session_cookie',
+    secret: 'secret',
+    store: new MySQLStore({
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        database: 'cookie_user'
+    }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('view engine', 'ejs');
 app.use(express.json());
 const path = require("path");
@@ -35,21 +53,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(session({
-    key:'session_cookie',
-    secret: 'secret',
-    store : new MySQLStore({
-        host:'localhost',
-        port:3306,
-        user:'root',
-        database:'cookie_user'
-    }),
-    resave:false,
-    saveUninitialized:false,
-    cookie:{maxAge:1000*60*60*24}
-}));
+
+
 
 
 // routes
@@ -173,75 +178,74 @@ app.post('/book/', urlencodedParser, async (req, res) => {
 
 });
 
-// app.get('/register', (req, res, next) => {
-//     res.send('Unregistred user');
-// })
+app.get('/register', (req, res, next) => {
+    res.send('Unregistred user');
+})
 
-// app.get('/login', (req, res, next) => {
-//     res.render('login')
-// });
+app.get('/login', (req, res, next) => {
+    res.render('login')
+});
 
-// app.get('/logout', (req, res, next) => {
-//     req.logOut();
-//     res.redirect('/private-route');
-// });
+app.get('/logout', (req, res, next) => {
+    req.logOut();
+    res.redirect('/private-route');
+});
 
-// app.get('/login-sucess', (req, res, next) => {
-//     res.send('Sucessfull login!');
-//     res.redirect('/private-route')
-// });
+app.get('/login-sucess', (req, res, next) => {
+    res.send('Sucessfull login!');
+    res.redirect('/private-route')
+});
 
-// app.get('/login-failure', (req, res, next) => {
-//     res.send('wrong info');
-// });
+app.get('/login-failure', (req, res, next) => {
+    res.send('wrong info');
+});
 
-// app.get('/register', (req, res, next) => {
-//     console.log('New signup started');
-//     res.render('register')
-// });
+app.get('/register', (req, res, next) => {
+    console.log('New signup started');
+    res.render('register')
+});
 
-// app.post('/register', userExists, (req, res, next) => {
-//     console.log('recieved new user');
-//     console.log(req.body.pw);
-//     const saltHash = genPassword(req.body.pw);
-//     console.log(saltHash);
-//     const password = saltHash.hashedpassword;
+app.post('/register', userExists, (req, res, next) => {
+    console.log('recieved new user');
+    const password = genPassword(req.body.pw);
 
-//     db.query('INSERT INTO acc_users(username,password,admin), VALUES (' + req.body.uname + ',' + password + ',0', function (error, results, fields) {
-//         if (error) { console.log('error') }
-//         else {
-//             console.log('Sign up Sucessful');
-//         }
-//     });
 
-//     res.redirect('/login');
+    db.query('INSERT INTO acc_users(username,password,admin), VALUES (?,?,1)', [req.body.uname, JSON.stringify(password)], function (error, results, fields) {
+        if (error) { console.log('error') }
+        else {
+            console.log('Sign up Sucessful');
+        }
+    });
 
-// });
+    res.redirect('/login');
 
-// app.post('/login', passport.authenticate('local', { failureRedirect: '/login-failure', sucessRedirect: '/login-sucess' }));
+});
 
-// app.get('private-route', isAuth, (req, res, next) => {
-//     res.render('/dashboard_user');
-// });
+app.post('/login', passport.authenticate('local',
+    { failureRedirect: '/login-failure', sucessRedirect: '/login-sucess' }));
 
-// app.get('/admin-route', isAdmin, (req, res, next) => {
-//     res.render('/dashboard_adm');
-// });
+app.get('private-route', isAuth, (req, res, next) => {
+    res.render('/dashboard_user');
+});
 
-// app.get('/notAuthorized', (req, res, next) => {
-//     console.log('Not authorized');
-//     res.send('Not authorized <a> href="/login"</a>');
-// });
+app.get('/admin-route', isAdmin, (req, res, next) => {
+    res.render('/dashboard_adm');
+});
 
-// app.get('./notAdm', (req, res, next) => {
-//     console.log('Not authorized admin');
-//     res.send('Not authorized <a> href="/login"</a>');
-// });
+app.get('/notAuthorized', (req, res, next) => {
+    console.log('Not authorized');
+    res.send('Not authorized <a> href="/login"</a>');
+});
 
-// app.get('/userAlreadyExists', (req, res, next) => {
-//     console.log('Duplicated user');
-//     res.send('This user name already exists <a> hre="/register</a>');
-// });
+app.get('./notAdm', (req, res, next) => {
+    console.log('Not authorized admin');
+    res.send('Not authorized <a> href="/login"</a>');
+});
+
+app.get('/userAlreadyExists', (req, res, next) => {
+    console.log('Duplicated user');
+    res.send('This user name already exists <a> hre="/register</a>');
+});
 
 _PORT = process.env.PORT || 5500
 app.listen(_PORT, () => {
