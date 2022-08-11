@@ -4,17 +4,10 @@ const mysql = require('mysql2/promise');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const ejs = require("ejs");
-var urlencodedParser = require('urlencoded-parser');
-const passport = require('passport');
-var session = require('express-session');
-var MySQLStore = require('express-mysql-session')(session);
-
+var urlencodedParser = require('urlencoded-parser')
 
 //  my own scripts imported
-const db = require('./models/db.js');
-
-
-
+const db = require('./models/db');
 
 
 // exports
@@ -25,21 +18,6 @@ require('dotenv').config();
 //   settings ? not sure yet
 
 const app = express();
-app.use(session({
-    key: 'session_cookie',
-    secret: 'secret',
-    store: new MySQLStore({
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        database: 'cookie_user'
-    }),
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 app.set('view engine', 'ejs');
 app.use(express.json());
 const path = require("path");
@@ -50,9 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-
-
-
+app.use(bodyParser.json());
 
 // routes
 app.get('/', (req, res) => {
@@ -61,14 +37,6 @@ app.get('/', (req, res) => {
 
 app.get('/search', (req, res) => {
     res.render('search')
-});
-
-app.get('/login', (req, res) => {
-    res.render('login')
-});
-
-app.get('/test', (req, res) => {
-    res.render('test')
 });
 
 
@@ -86,19 +54,6 @@ app.get('/accommodation/all', async (req, res) => {
         });
 });
 
-app.get('/accommodation/locations', async (req, res) => {
-    db.query('SELECT * FROM accommodation GROUP BY location',
-        [req.params.search],
-        (err, results, fields) => {
-            if (err) {
-                res.status(500).json({ error: err });
-            } else {
-                const accommodation = results;
-                res.json(accommodation);
-                console.log(accommodation)
-            }
-        });
-});
 
 app.get('/location/:location', async (req, res) => {
     db.query('SELECT * FROM accommodation WHERE location=?',
@@ -143,10 +98,7 @@ app.get('/location/:location/type/:type', async (req, res) => {
 });
 
 app.post('/book/', urlencodedParser, async (req, res) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+    console.log(req.body);
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
         (error, results, fields) => {
             if (error) {
@@ -177,61 +129,7 @@ app.post('/book/', urlencodedParser, async (req, res) => {
             }
         })
 
-=======
-=======
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-=======
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-    try {
-        db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('reservation made!');
-                }
-            })
-        db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('Availability updated');
-
-=======
-    try {
-        db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('reservation made!');
-                }
-            })
-        db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
-            (error, results, fields) => {
-                if (error) {
-                    res.status(500).json({ error });
-                } else {
-                    console.log('Availability updated');
-
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-                    res.json({ sucess: 1 });
-                }
-            })
-    } catch (err) { console.log(err) }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-=======
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-=======
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
-=======
->>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
 });
-
 
 _PORT = process.env.PORT || 5500
 app.listen(_PORT, () => {
