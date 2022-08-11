@@ -145,6 +145,7 @@ app.get('/location/:location/type/:type', async (req, res) => {
 app.post('/book/', urlencodedParser, async (req, res) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
         (error, results, fields) => {
             if (error) {
@@ -178,6 +179,8 @@ app.post('/book/', urlencodedParser, async (req, res) => {
 =======
 =======
 >>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
+=======
+>>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
     try {
         db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
             (error, results, fields) => {
@@ -199,6 +202,9 @@ app.post('/book/', urlencodedParser, async (req, res) => {
             })
     } catch (err) { console.log(err) }
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
+=======
 >>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
 =======
 >>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
