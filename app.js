@@ -208,9 +208,11 @@ app.get('/register', (req, res, next) => {
 app.post('/register', userExists, (req, res, next) => {
     console.log('recieved new user');
     const password = genPassword(req.body.pw);
+    const uname = req.body.uname;
+    console.log(uname,password,req.body);
 
 
-    db.query('INSERT INTO acc_users(username,password,admin), VALUES (?,?,1)', [req.body.uname, JSON.stringify(password)], function (error, results, fields) {
+    db.query('INSERT INTO acc_users(username,password,admin), VALUES (?,?,1)', [uname, password], function (error, results, fields) {
         if (error) { console.log('error') }
         else {
             console.log('Sign up Sucessful');

@@ -4,13 +4,12 @@ const crypto = require('crypto');
 const LocalStrategy = require('passport-local').Strategy;
 salt = process.env.SALT;
 
-function validPassword(pw, hash, salt) {
-    console.log(pw);
-    var hashVerify = crypto.pbkdf2Sync(pw, salt, 1000, 60, 'sha512').toString();
+function validPassword(req, hash) {
+    var hashVerify = crypto.pbkdf2Sync(req.body.pw, salt, 1000, 60, 'sha512').toString();
     return hash == hashVerify;
 }
-function genPassword(pw) {
-    var genhash = crypto.pbkdf2Sync(pw, salt, 1000, 60, 'sha512').toString();
+function genPassword(req) {
+    var genhash = crypto.pbkdf2Sync(req.body.pw, salt, 1000, 60, 'sha512').toString();
     return genhash
 }
 function isAuth(req, res, next) {
@@ -32,8 +31,12 @@ function isAdmin(req, res, next) {
     }
 }
 
+
 function userExists(req, res, next) {
-    db.query('SELECT * FROM acc_users WHERE username = ?', [req.body.uname],
+    console.log('req.body.uname=', req.body.uname);
+    uanme = req.body.uname
+
+    db.query('SELECT * FROM acc_users WHERE username = ?', uname,
         function (error, results, fields) {
             if (error) {
                 console.log('User not found');
@@ -47,8 +50,8 @@ function userExists(req, res, next) {
         })
 }
 
-module.exports = userExists;
-module.exports = isAdmin;
-module.exports = isAuth;
-module.exports = genPassword;
 module.exports = validPassword;
+module.exports = genPassword;
+module.exports = isAuth;
+module.exports = isAdmin;
+module.exports = userExists;
