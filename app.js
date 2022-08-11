@@ -11,12 +11,9 @@ var MySQLStore = require('express-mysql-session')(session);
 
 
 //  my own scripts imported
-const db = require('./models/db');
-const strategy = require('./models/login')
-const isAdmin = require('./middleware/login');
-const isAuth = require('./middleware/login');
-const userExists = require('./middleware/login');
-const genPassword = require('./middleware/login');
+const db = require('./models/db.js');
+
+
 
 
 
@@ -178,76 +175,6 @@ app.post('/book/', urlencodedParser, async (req, res) => {
 
 });
 
-app.get('/register', (req, res, next) => {
-    res.send('Unregistred user');
-})
-
-app.get('/login', (req, res, next) => {
-    res.render('login')
-});
-
-app.get('/logout', (req, res, next) => {
-    req.logOut();
-    res.redirect('/private-route');
-});
-
-app.get('/login-sucess', (req, res, next) => {
-    res.send('Sucessfull login!');
-    res.redirect('/private-route')
-});
-
-app.get('/login-failure', (req, res, next) => {
-    res.send('wrong info');
-});
-
-app.get('/register', (req, res, next) => {
-    console.log('New signup started');
-    res.render('register')
-});
-
-app.post('/register', userExists, (req, res, next) => {
-    console.log('recieved new user');
-    const password = genPassword(req.body.pw);
-    const uname = req.body.uname;
-    console.log(uname,password,req.body);
-
-
-    db.query('INSERT INTO acc_users(username,password,admin), VALUES (?,?,1)', [uname, password], function (error, results, fields) {
-        if (error) { console.log('error') }
-        else {
-            console.log('Sign up Sucessful');
-        }
-    });
-
-    res.redirect('/login');
-
-});
-
-app.post('/login', passport.authenticate('local',
-    { failureRedirect: '/login-failure', sucessRedirect: '/login-sucess' }));
-
-app.get('private-route', isAuth, (req, res, next) => {
-    res.render('/dashboard_user');
-});
-
-app.get('/admin-route', isAdmin, (req, res, next) => {
-    res.render('/dashboard_adm');
-});
-
-app.get('/notAuthorized', (req, res, next) => {
-    console.log('Not authorized');
-    res.send('Not authorized <a> href="/login"</a>');
-});
-
-app.get('./notAdm', (req, res, next) => {
-    console.log('Not authorized admin');
-    res.send('Not authorized <a> href="/login"</a>');
-});
-
-app.get('/userAlreadyExists', (req, res, next) => {
-    console.log('Duplicated user');
-    res.send('This user name already exists <a> hre="/register</a>');
-});
 
 _PORT = process.env.PORT || 5500
 app.listen(_PORT, () => {
