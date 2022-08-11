@@ -1,3 +1,9 @@
+const map = L.map("map1");
+L.tileLayer
+    ("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        { attribution: attrib }).addTo(map);
+
+
 document.getElementById('accommodation_search').addEventListener('click', e => {
     const location = document.getElementById('accommodation_location').value;
     ajaxSearch(location);
@@ -6,9 +12,18 @@ document.getElementById('accommodation_search').addEventListener('click', e => {
 async function ajaxSearch(location) {
     const ajaxResponse = await fetch(`/location/${location}`);
     const accommodation = await ajaxResponse.json();
+    var map = L.map("map1");
+    L.tileLayer
+        ("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            { attribution: attrib }).addTo(map);
     document.getElementById('accommodation_results').innerHTML = "";
     accommodation.forEach(accommodation => {
         const p = document.createElement('p');
+        const lat = accommodation.latitude
+        const long = accommodation.longitute
+        const local = [long,lat]
+        L.marker(local).addTo(map)
+
         const text = document.createTextNode(`Name : ${accommodation.name}
               Type : ${accommodation.type}`);
         p.appendChild(text);
@@ -40,3 +55,5 @@ async function ajaxSearch(location) {
         document.getElementById('accommodation_results').appendChild(btn);
     });
 }
+
+const attrib = "Map data copyright OpenStreetMap contributors, Open Database Licence";
