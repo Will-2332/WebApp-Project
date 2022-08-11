@@ -146,6 +146,7 @@ app.post('/book/', urlencodedParser, async (req, res) => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
         (error, results, fields) => {
             if (error) {
@@ -197,12 +198,33 @@ app.post('/book/', urlencodedParser, async (req, res) => {
                 } else {
                     console.log('Availability updated');
 
+=======
+    try {
+        db.query('INSERT INTO acc_bookings(accID,npeople,thedate) VALUES(' + req.body.accID + ',' + req.body.npeople + ',' + req.body.thedate + ')',
+            (error, results, fields) => {
+                if (error) {
+                    res.status(500).json({ error });
+                } else {
+                    console.log('reservation made!');
+                }
+            })
+        db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
+            (error, results, fields) => {
+                if (error) {
+                    res.status(500).json({ error });
+                } else {
+                    console.log('Availability updated');
+
+>>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
                     res.json({ sucess: 1 });
                 }
             })
     } catch (err) { console.log(err) }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
+=======
 >>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
 =======
 >>>>>>> parent of 9613e3d (OK! Parts 1 & 2 Done)
