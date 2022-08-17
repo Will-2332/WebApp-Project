@@ -6,6 +6,7 @@ document.getElementById('login_btn').addEventListener('click', e => {
 });
 
 async function ajaxLogin(uname, password) {
+    console.log(uname,password)
     const response = await fetch('/login', {
         method: 'POST',
         headers: {
@@ -13,13 +14,11 @@ async function ajaxLogin(uname, password) {
             'Content-Type': 'application/jason'
         },
         body: JSON.stringify({
-            username: uname,
-            password: password
+            'username' : uname,
+            'password' : password
         }),
     })
-    const answer = await response.answer();
     
-    console.log('it got here');
     if (ajaxLogin.status == 200) {
         alert('Login succesfull!');
     } else {
