@@ -75,38 +75,41 @@ passport.use(new LocalStrategy(async (username, password, done) => {
     db.query('SELECT * FROM acc_users WHERE username=?',
         [username],
         (err, results, fields) => {
-            const users = results[0]
-            if (username != users.username) {
+            const user1 = results[0]
+            if (username != user1.username) {
                 return done(null, false, console.log('Invalid User'));
             }
-            if (password != users.password) {
+            if (password != user1.password) {
                 return done(null, false, consolge.log('Invalid Password'));
             }
             if (err) {
                 return done(err, console.log('Error, something went wrong'))
             }
             else {
-                return done(null, users);
+                console.log('Valid User ' + username);
+                const user = [
+                    ID = user1.ID,
+                    username = user1.username,
+                    password = user1.password,
+                    admin = user1.admin
+                ]
+                return done(null, user);
             }
         });
 }));
 
 passport.serializeUser(function (user, done) {
-    console.log(user)
-    done(null, {
-        id: user.id,
-        isAdmin: user.admin
-    });
+    console.log('Serializing Id =' + user[0])
+    done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
-    console.log(user)
-    console.log('deserializer Id=' + userId)
+passport.deserializeUser(async function (userId, done) {
+    console.log('deserializer Id=' + userId[0])
     db.query('SELECT * FROM acc_users WHERE ID=?',
-        [user.id],
+        [userId[0]],
         (err, results, fields) => {
             const users = results[0];
-            done(null, users);
+            done(null, userId);
         })
 
 });

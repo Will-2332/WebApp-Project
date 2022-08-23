@@ -6,24 +6,31 @@ document.getElementById('login_btn').addEventListener('click', e => {
 });
 
 async function ajaxLogin(uname, password) {
-    console.log(uname,password)
+    console.log(uname, password)
     const response = await fetch('/login', {
         method: 'POST',
         headers: {
             'Accept': 'application/json, text/plain, /',
-            'Content-Type': 'application/jason'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            'username' : uname,
-            'password' : password
+            "username": uname,
+            "password": password
         }),
-    })
-    
-    if (ajaxLogin.status == 200) {
-        alert('Login succesfull!');
+    });
+
+    if (response.status == 200) {
+        alert(`User ${uname} logged in!`);
+        document.getElementById('logged')
+        const p = document.createElement('p');
+        const text = document.createTextNode(`User ${uname} is now logged in!`);
+        p.appendChild(text);
+        document.getElementById('logged').appendChild(p);
+        console.log('done')
     } else {
         const json = await response.json();
-        alert(`Failure to login ${json.error}`)
-        console.log(ajaxLogin.status);
+        alert(`Error during reservation : ${json.error}`);
+        document.getElementById('logged').innerHTML = "";
+        console.log * +('not done')
     }
 }
