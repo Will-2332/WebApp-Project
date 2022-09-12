@@ -117,9 +117,8 @@ passport.deserializeUser(async function (userId, done) {
 function isAuth(req, res, next) {
     if (req.isAuthenticated()) {
         next();
-    }
-    else {
-        res.redirect('/notAuthorized');
+    } else {
+        res.status(401).json('Unauthorized acess');
     }
 }
 
@@ -199,7 +198,7 @@ app.get('/location/:location/type/:type', async (req, res) => {
         });
 });
 
-app.post('/book/', urlencodedParser, async (req, res) => {
+app.post('/book/', urlencodedParser,isAuth, async (req, res) => {
     console.log(req.body);
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
         (error, results, fields) => {
