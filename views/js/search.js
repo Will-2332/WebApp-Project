@@ -49,7 +49,10 @@ async function ajaxSearch(location) {
             })
             if (ajaxReservation.status == 200) {
                 alert('Reservation done');
-            } else {
+            } if (ajaxReservation.status == 401) {
+                alert('Please login!')
+            } 
+            else {
                 const json = await response.json();
                 alert(`Error during reservation : ${json.error}`);
             }
