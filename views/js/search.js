@@ -8,7 +8,7 @@ async function ajaxSearch(location) {
     const accommodation = await ajaxResponse.json();
     document.getElementById('accommodation_results')
     const local = accommodation[0];
-    var map = L.map("map1").setView([local.latitude,local.longitude],9);
+    var map = L.map("map1").setView([local.latitude, local.longitude], 9);
     // document.getElementById('accommodation_results').innerHTML = "";
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20,
@@ -16,7 +16,7 @@ async function ajaxSearch(location) {
     }).addTo(map);
     accommodation.forEach(accommodation => {
         const p = document.createElement('p');
-        const pos = [accommodation.latitude,accommodation.longitude]
+        const pos = [accommodation.latitude, accommodation.longitude]
         const marker = L.circle(pos, {
             color: 'red',
             fillColor: '#f03',
@@ -51,7 +51,7 @@ async function ajaxSearch(location) {
                 alert('Reservation done');
             } if (ajaxReservation.status == 401) {
                 alert('Please login!')
-            } 
+            }
             else {
                 const json = await response.json();
                 alert(`Error during reservation : ${json.error}`);

@@ -6,7 +6,6 @@ document.getElementById('login_btn').addEventListener('click', e => {
 });
 
 async function ajaxLogin(uname, password) {
-    console.log(uname, password)
     const response = await fetch('/login', {
         method: 'POST',
         headers: {
@@ -27,7 +26,11 @@ async function ajaxLogin(uname, password) {
         p.appendChild(text);
         document.getElementById('logged').appendChild(p);
         console.log('done')
-    } else {
+    }
+    if (response.status == 401) {
+        alert('Invalid Details')
+    }
+    else {
         const json = await response.json();
         alert(`Error during reservation : ${json.error}`);
         document.getElementById('logged').innerHTML = "";

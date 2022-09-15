@@ -50,50 +50,31 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
-
-// const verifyCallback = (username, password, done) => {
-
-//     db.query('SELECT * FROM acc_users WHERE username = ? ', [username], function (error, results, fields) {
-//         if (error)
-//             return done(error);
-
-//         if (results.length == 0) {
-//             return done(null, false);
-//         }
-//         const isValid = validPassword(password, results[0].username);
-//         user = { id: results[0].id, username: results[0].username };
-//         if (isValid) {
-//             return true, done(null, user);
-//         }
-//         else {
-//             return done(null, false);
-//         }
-//     });
-// }
-
 passport.use(new LocalStrategy(async (username, password, done) => {
     db.query('SELECT * FROM acc_users WHERE username=?',
         [username],
         (err, results, fields) => {
             const user1 = results[0]
-            if (username != user1.username) {
-                return done(null, false, console.log('Invalid User'));
-            }
-            if (password != user1.password) {
-                return done(null, false, consolge.log('Invalid Password'));
-            }
-            if (err) {
-                return done(err, console.log('Error, something went wrong'))
+            if (results[0] != null || results[0] != undefined) {
+                if (password != user1.password) {
+                    return (done(err, console.log('Invalid Password')));
+                }
+                if (err) {
+                    return done(err, console.log('Error, something went wrong'))
+                }
+                else {
+                    console.log('Valid User ' + username);
+                    const user = [
+                        ID = user1.ID,
+                        username = user1.username,
+                        password = user1.password,
+                        admin = user1.admin
+                    ]
+                    return done(null, user);
+                }
             }
             else {
-                console.log('Valid User ' + username);
-                const user = [
-                    ID = user1.ID,
-                    username = user1.username,
-                    password = user1.password,
-                    admin = user1.admin
-                ]
-                return done(null, user);
+                return done(err, console.log('Invalid Username'));
             }
         });
 }));
@@ -128,7 +109,7 @@ function isAdmin(req, res, next) {
         next();
     }
     else {
-        res.redirect('/notAuthorizedAdmin');
+        res.status(401).json('Unauthorized user');
     }
 }
 // routes
@@ -198,7 +179,7 @@ app.get('/location/:location/type/:type', async (req, res) => {
         });
 });
 
-app.post('/book/', urlencodedParser,isAuth, async (req, res) => {
+app.post('/book/', urlencodedParser, isAuth, async (req, res) => {
     console.log(req.body);
     db.query('UPDATE acc_dates SET availability =  availability - ' + req.body.npeople + ' WHERE id=' + req.body.ID + '',
         (error, results, fields) => {
