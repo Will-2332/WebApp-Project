@@ -7,9 +7,10 @@ async function ajaxSearch(location) {
     const ajaxResponse = await fetch(`/location/${location}`);
     const accommodation = await ajaxResponse.json();
     document.getElementById('accommodation_results')
+    alert('Reload the page to start a new search')
+    // document.getElementById('accommodation_results').innerHTML = "";
     const local = accommodation[0];
     var map = L.map("map1").setView([local.latitude, local.longitude], 9);
-    // document.getElementById('accommodation_results').innerHTML = "";
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20,
         attribution: '© OpenStreetMap'
